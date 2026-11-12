@@ -1,0 +1,98 @@
+import java.util.*;
+public class Practice{
+    public static void main(String[] args){
+        //CASE #1
+        int[][] graph = {{1,1,0,0,0},
+                         {1,1,0,1,0},
+                         {0,0,1,0,0},
+                         {0,0,0,1,1}};
+        //Expected: 4
+
+        //CASE #2
+        /*int[][] graph = {{1,1,0,0,0},
+                         {1,0,0,1,1},
+                         {0,0,0,1,0},
+                         {1,1,0,0,0}};*/
+        //Expected: 3
+
+        //CASE #3
+        /*int[][] graph = {{1,1,1},
+                         {0,0,0},
+                         {1,1,1}};*/
+        //Expected: 2
+
+        //CASE #4
+        /*int[][] graph = {{1,0,1,0,1},
+                         {0,0,0,0,0},
+                         {1,0,1,0,1},
+                         {0,0,0,0,0},
+                         {1,0,1,0,1}};*/
+        //Expected: 9
+
+        //CASE #5
+        /*int[][] graph = {{1,1,1,1},
+                         {1,1,1,1},
+                         {1,1,1,1},
+                         {1,1,1,1}};*/
+        //Expected: 1
+
+        //CASE #6
+        /*int[][] graph = {{1,0,1,1,0,0},
+                         {1,0,0,1,0,1},
+                         {0,0,1,0,0,1},
+                         {1,1,0,0,1,0},
+                         {0,1,0,1,1,0}};*/
+        //Expected: 6
+
+        dfs(graph);
+    }
+    public static void dfs(int[][] graph){
+        boolean[] visited = new boolean[graph[0].length];
+        Deque<Integer> stack = new ArrayDeque<>();
+        int count = 0;
+
+        for(int i = 0; i < graph.length; i++){
+            if(!visited[i]){
+                visited[i] = true;
+                stack.push(i);
+
+                while(!stack.isEmpty()){
+                    int temp = 0;
+                    int node = stack.pop();
+
+                    if(node >= graph.length){ // to prevent out of bounds
+                        continue;
+                    }
+
+                    for(int j = 0; j < graph[i].length; j++){
+
+                        int side = j + 1;
+                        boolean isEnd = false;
+                        if(side >= graph[node].length){ //check if last index
+                            isEnd = true;
+                            side = j;
+                        }
+
+                        if(graph[node][j] == 1){
+                            temp++;
+                            if(!visited[j]) {
+                                visited[j] = true;
+                                stack.push(j);
+                            }
+                            else if(node > 0 && (graph[node - 1][j] == 1 || (graph[node][side] == 1 && !isEnd))){ //detects connected lands(1)
+                                temp--;
+                            }
+
+                            if((graph[node][side] == 0 || isEnd) && temp > 0){ //detects water(0) and last index
+                                count++;
+                                temp = 0;
+                            }
+                        }
+                    }
+                    //System.out.println(count); //display count every row
+                }
+            }
+        }
+        System.out.println(count); //show total islands
+    }
+}
